@@ -1,15 +1,16 @@
 import { ASSETS } from "../assetLoader";
 import { ConfigSetter } from "../base/configSet";
 import { GlobalConfig } from "../globalConfig";
-
-export const PlayerAnimation = {
-  GO_RIGHT: "GO_RIGHT",
-  GO_LEFT: "GO_LEFT",
-  TURN: "TURN",
-};
+import { PlayerAnimation, PlayerConfig } from "./config";
+import { PlayerDamage } from "./damage";
+import { PlayerMovement } from "./movement";
 
 export class Player extends ConfigSetter {
   cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+  playerConfig = new PlayerConfig();
+  movement: PlayerMovement;
+  damage: PlayerDamage;
+  space = this.config.mainScene.input.keyboard.addKey("SPACE");
   constructor(
     config: GlobalConfig,
     public playerSprite: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
@@ -18,25 +19,37 @@ export class Player extends ConfigSetter {
     this.animatePlayer();
     this.cursors = this.config.mainScene.input.keyboard.createCursorKeys();
     this.config.player = this;
+    this.movement = new PlayerMovement(this);
+    this.damage = new PlayerDamage(this);
+  }
+
+  update() {
+    this.movePlayer();
+    this.fireCheck();
   }
 
   movePlayer() {
     if (this.cursors.left.isDown) {
-      this.playerSprite.setVelocityX(-160);
-
-      this.playerSprite.anims.play(PlayerAnimation.GO_LEFT, true);
+      this.movement.moveLeft();
     } else if (this.cursors.right.isDown) {
-      this.playerSprite.setVelocityX(160);
-
-      this.playerSprite.anims.play(PlayerAnimation.GO_RIGHT, true);
+      this.movement.moveRight();
     } else {
-      this.playerSprite.setVelocityX(0);
-
-      this.playerSprite.anims.play(PlayerAnimation.TURN);
+      this.movement.stop();
     }
+    if (this.cursors.up.isDown) {
+      this.movement.jump();
+    } else if (this.cursors.down.isDown) {
+      this.movement.dive();
+    }
+  }
 
-    if (this.cursors.up.isDown && this.playerSprite.body.touching.down) {
-      this.playerSprite.setVelocityY(-330);
+  fireCheck() {
+    if (this.space.isDown && this.damage.couldFire) {
+      this.damage.fire();
+      this.damage.setCouldFire(false);
+    }
+    if (this.space.isUp) {
+      this.damage.setCouldFire(true);
     }
   }
 
@@ -45,6 +58,7 @@ export class Player extends ConfigSetter {
     this.playerSprite.setCollideWorldBounds(true);
 
     this.config.mainScene.anims.create({
+      skipMissedFrames: true,
       key: PlayerAnimation.GO_LEFT,
       frames: this.config.mainScene.anims.generateFrameNumbers(ASSETS.player, {
         start: 0,
@@ -55,12 +69,14 @@ export class Player extends ConfigSetter {
     });
 
     this.config.mainScene.anims.create({
+      skipMissedFrames: true,
       key: PlayerAnimation.TURN,
       frames: [{ key: ASSETS.player, frame: 4 }],
       frameRate: 20,
     });
 
     this.config.mainScene.anims.create({
+      skipMissedFrames: true,
       key: PlayerAnimation.GO_RIGHT,
       frames: this.config.mainScene.anims.generateFrameNumbers(ASSETS.player, {
         start: 5,

@@ -1,24 +1,39 @@
 import { ConfigSetter } from "./base/configSet";
 import { GlobalConfig } from "./globalConfig";
 import bg from "../assets/ocean.jpg";
-import player from "../assets/dude.png";
+import speedBuff from "../assets/pizza.png";
+import flyBuff from "../assets/plane.png";
+
+import { SPRITE_SHEET } from "../app";
+export type AssetCheck = { [key in ASSETS]: boolean };
 export class AssetLoader extends ConfigSetter {
-  constructor(config: GlobalConfig, public assetCallback: () => void) {
+  constructor(
+    config: GlobalConfig,
+    public spriteSheet: typeof SPRITE_SHEET,
+    public assetCallback: () => void
+  ) {
     super(config);
   }
   currentLoadedAssetNumber = 0;
+  currentLoadedAsset: AssetCheck = Object.keys(ASSETS).reduce(
+    (a, v) => ({ ...a, [v]: false }),
+    {} as AssetCheck
+  );
   lastLoadedAsset?: string;
   preload() {
-    this.config.mainScene.textures.on("onload", (e: string) => {
+    this.config.mainScene.textures.on("onload", (e: ASSETS) => {
       this.assetLoaded(e);
-      console.log(e);
       this.allItemLoaded();
     });
+
     this.loadBg();
     this.loadPlayer();
+    this.loadBuffs();
+    this.loadDmg();
   }
 
-  assetLoaded(assetName: string) {
+  assetLoaded(assetName: ASSETS) {
+    this.currentLoadedAsset[assetName] = true;
     this.lastLoadedAsset = assetName;
     this.currentLoadedAssetNumber++;
   }
@@ -32,25 +47,54 @@ export class AssetLoader extends ConfigSetter {
       this.assetCallback();
     }
   }
+  loadBuffs() {
+    this.config.mainScene.textures.addBase64(ASSETS.speedBuff, speedBuff);
+    this.config.mainScene.textures.addBase64(ASSETS.flyBuff, flyBuff);
+  }
 
   loadPlayer() {
     const playerImage = new Image();
-    playerImage.src = player;
-    this.config.mainScene.textures.addSpriteSheet(ASSETS.player, playerImage, {
-      frameWidth: 32,
-      frameHeight: 48,
-    });
-    this.assetLoaded(ASSETS.player);
-    this.allItemLoaded();
+    playerImage.onload = () => {
+      this.config.mainScene.textures.addSpriteSheet(
+        ASSETS.player,
+        playerImage,
+        {
+          frameWidth: 32,
+          frameHeight: 48,
+        }
+      );
 
+      this.assetLoaded(ASSETS.player);
+      this.allItemLoaded();
+    };
+    playerImage.src = this.spriteSheet.player;
+  }
+  loadDmg() {
+    const playerDmg = new Image();
+    playerDmg.onload = () => {
+      this.config.mainScene.textures.addSpriteSheet(
+        ASSETS.playerDmg,
+        playerDmg,
+        {
+          frameWidth: 32,
+          frameHeight: 32,
+        }
+      );
+
+      this.assetLoaded(ASSETS.playerDmg);
+      this.allItemLoaded();
+    };
+    playerDmg.src = this.spriteSheet.playerDmg;
   }
 
   get allAssetLoaded() {
     return this.currentLoadedAssetNumber === Object.keys(ASSETS).length;
   }
 }
-
-export const ASSETS = {
-  bg: "bg",
-  player: "player",
-};
+export enum ASSETS {
+  bg = "bg",
+  player = "player",
+  speedBuff = "SpeedBuff",
+  flyBuff = "flyBuff",
+  playerDmg = "playerDmg",
+}

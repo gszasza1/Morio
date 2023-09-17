@@ -1,6 +1,6 @@
 import { AssetLoader } from "./assetLoader";
 import { MainScene } from "./mainScene";
-import { Player } from "./player/base";
+import { Player } from "./player/player";
 
 export class GlobalConfig {
   private _game: Phaser.Game;

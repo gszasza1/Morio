@@ -1,20 +1,21 @@
 import Phaser from "phaser";
 import { GlobalConfig } from "./globalConfig";
 import { ASSETS, AssetLoader } from "./assetLoader";
-import { Player } from "./player/base";
+import { Player } from "./player/player";
 
+import { SPRITE_SHEET } from "../app";
+import { SpeedBuff } from "./buff/speedBuff";
+import { FlyBuff } from "./buff/flyBuff";
 export class MainScene extends Phaser.Scene {
   config: GlobalConfig;
-  constructor(config: GlobalConfig) {
+  constructor(config: GlobalConfig, spriteSheet: typeof SPRITE_SHEET) {
     super("MainScene");
     this.config = config;
-    this.config.assetLoader = new AssetLoader(this.config, () =>
+    this.config.assetLoader = new AssetLoader(this.config, spriteSheet, () =>
       this.assetLoaded()
     );
   }
-  //   preload() {
-  //     this.config.mainScene.load.image("asd", "../assets/dude.png");
-  //   }
+
   create() {
     this.config.assetLoader.preload();
   }
@@ -59,6 +60,10 @@ export class MainScene extends Phaser.Scene {
     );
     this.cameras.main.startFollow(player, true, 0.03, 0.5);
     new Player(this.config, player);
+    const speed = new SpeedBuff(this.config);
+    speed.addToScene({ x: 60, y: 60 });
+    const fly = new FlyBuff(this.config);
+    fly.addToScene({ x: 100, y: 60 });
   }
 
   assetLoaded() {
@@ -67,7 +72,7 @@ export class MainScene extends Phaser.Scene {
   }
   update() {
     if (this.config.player) {
-      this.config.player.movePlayer();
+      this.config.player.update()
     }
   }
 }

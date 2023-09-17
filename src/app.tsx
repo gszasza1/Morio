@@ -1,14 +1,20 @@
 import { createRoot } from "react-dom/client";
 import Phaser from "phaser";
 import { FunctionComponent, useRef } from "react";
-import bomb from "./assets/bomb.png";
-import sky from "./assets/sky.png";
-import dude from "./assets/dude.png";
 import bg from "./assets/game-bg.jpg";
 import { GlobalConfig } from "./game/globalConfig";
 import { MainScene } from "./game/mainScene";
+
+import player from "./assets/dude.png";
+import playerDmg from "./assets/dino.png";
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface AppProps {}
+
+//Because fck you phaser
+export const SPRITE_SHEET = {
+  player: player,
+  playerDmg: playerDmg,
+};
 
 const getCorrectAspect = () => {
   const currentAspect = window.innerWidth / window.innerHeight;
@@ -52,7 +58,7 @@ window.addEventListener("resize", () => {
 const createGame = (ref: HTMLDivElement) => {
   config.parent = ref;
   const globalConfig = new GlobalConfig();
-  const mainScene = new MainScene(globalConfig);
+  const mainScene = new MainScene(globalConfig, SPRITE_SHEET);
   config.scene = mainScene;
   const game = new Phaser.Game(config);
   globalConfig.game = game;
@@ -69,7 +75,7 @@ const App: FunctionComponent<AppProps> = () => {
         <p className="loading-text">Betöltés</p>
       </div>
       <div
-        ref={ref => {
+        ref={(ref) => {
           if (!viewInitialized.current) {
             viewInitialized.current = true;
             createGame(ref);
