@@ -7,6 +7,7 @@ import { SPRITE_SHEET } from "../app";
 import { SpeedBuff } from "./buff/speedBuff";
 import { FlyBuff } from "./buff/flyBuff";
 import { PlayerDmgModifierBuff } from "./buff/dmgModifierPlayerBuff";
+import { SharkEnemy } from "./enemy/shark";
 export class MainScene extends Phaser.Scene {
   config: GlobalConfig;
   constructor(config: GlobalConfig, spriteSheet: typeof SPRITE_SHEET) {
@@ -67,15 +68,18 @@ export class MainScene extends Phaser.Scene {
     fly.addToScene({ x: 100, y: 60 });
     const dmgBuff = new PlayerDmgModifierBuff(this.config);
     dmgBuff.addToScene({ x: 200, y: 60 });
+    const sharkEnemy = new SharkEnemy(this.config);
+    sharkEnemy.addToScene({ x: 1000, y: 60 });
   }
 
   assetLoaded() {
+    this.config.enemies = new Phaser.GameObjects.Group(this);
     this.setBg();
     this.setPlayer();
   }
   update() {
     if (this.config.player) {
-      this.config.player.update()
+      this.config.player.update();
     }
   }
 }

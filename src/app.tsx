@@ -7,6 +7,7 @@ import { MainScene } from "./game/mainScene";
 
 import player from "./assets/dude.png";
 import playerDmg from "./assets/dino.png";
+import shark from "./assets/shark.png";
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface AppProps {}
 
@@ -14,6 +15,7 @@ interface AppProps {}
 export const SPRITE_SHEET = {
   player: player,
   playerDmg: playerDmg,
+  shark: shark,
 };
 
 const getCorrectAspect = () => {

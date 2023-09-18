@@ -8,21 +8,25 @@ export class GlobalConfig {
   private _assetLoader: AssetLoader;
   private _engineConfig: Phaser.Types.Core.GameConfig;
   private _player: Player;
+  private _enemies:Phaser.GameObjects.Group
 
   set game(game: Phaser.Game) {
     if (!this._game) {
       this._game = game;
     }
   }
+  
   get game() {
     if (!this.game) {
       throw Error("Game not found");
     }
     return this._game;
   }
+
   set mainScene(_mainScene: MainScene) {
     this._mainScene = _mainScene;
   }
+
   get mainScene() {
     if (!this._mainScene) {
       throw Error("MainScene not found");
@@ -33,25 +37,38 @@ export class GlobalConfig {
   set assetLoader(assetLoader: AssetLoader) {
     this._assetLoader = assetLoader;
   }
+
   get assetLoader() {
     if (!this._assetLoader) {
       throw Error("AssetLoader not found");
     }
     return this._assetLoader;
   }
+
   set engineConfig(engineConfig: Phaser.Types.Core.GameConfig) {
     this._engineConfig = engineConfig;
   }
+
   get engineConfig() {
     if (!this._engineConfig) {
       throw Error("EngineConfig not found");
     }
     return this._engineConfig;
   }
+
   set player(player: Player) {
     this._player = player;
   }
+
   get player() {
     return this._player;
+  }
+
+  set enemies(enemies: Phaser.GameObjects.Group) {
+    this._enemies = enemies;
+  }
+
+  get enemies() {
+    return this._enemies;
   }
 }

@@ -55,7 +55,7 @@ export class PlayerRocketDmg extends BaseDmg {
       {
         x,
         y,
-        lifespan: { min: 1000, max: 3000 },
+        lifespan: { min: 200, max: 600 },
         speed: { min: 5, max: 25 },
         angle: { min: 270 - 10, max: 270 + 10 },
         timeScale: 0.35,

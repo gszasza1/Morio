@@ -33,6 +33,7 @@ export class AssetLoader extends ConfigSetter {
     this.loadPlayer();
     this.loadBuffs();
     this.loadDmg();
+    this.loadEnemy();
   }
 
   assetLoaded(assetName: ASSETS) {
@@ -76,6 +77,19 @@ export class AssetLoader extends ConfigSetter {
     };
     playerImage.src = this.spriteSheet.player;
   }
+  loadEnemy() {
+    const shark = new Image();
+    shark.onload = () => {
+      this.config.mainScene.textures.addSpriteSheet(ASSETS.shark, shark, {
+        frameWidth: 126,
+        frameHeight: 50,
+      });
+
+      this.assetLoaded(ASSETS.shark);
+      this.allItemLoaded();
+    };
+    shark.src = this.spriteSheet.shark;
+  }
 
   loadDmg() {
     const playerDmg = new Image();
@@ -111,4 +125,5 @@ export enum ASSETS {
   playerDmgModifierBuff = "playerDmgModifierBuff",
   smoke = "smoke",
   rocket = "rocket",
+  shark = "shark",
 }

@@ -48,7 +48,6 @@ export class PlayerMovement {
   }
   addXSpeed(extraSpeed: number) {
     this.player.playerConfig.speed += extraSpeed;
-  
   }
 
   private disableGravity() {
