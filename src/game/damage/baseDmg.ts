@@ -1,4 +1,5 @@
 import { ConfigSetter } from "../base/configSet";
+import { Direction } from "../base/direction";
 import { GlobalConfig } from "../globalConfig";
 
 export abstract class BaseDmg extends ConfigSetter {
@@ -8,7 +9,11 @@ export abstract class BaseDmg extends ConfigSetter {
     super(config);
   }
 
-  abstract addToScene(position: { x: number; y: number }): void;
+  abstract addToScene(position: {
+    x: number;
+    y: number;
+    direction: Direction;
+  }): void;
   abstract onEnemyCollide(): void;
   abstract onWorldCollide(): void;
 }

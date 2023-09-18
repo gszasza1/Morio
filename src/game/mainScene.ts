@@ -6,6 +6,7 @@ import { Player } from "./player/player";
 import { SPRITE_SHEET } from "../app";
 import { SpeedBuff } from "./buff/speedBuff";
 import { FlyBuff } from "./buff/flyBuff";
+import { PlayerDmgModifierBuff } from "./buff/dmgModifierPlayerBuff";
 export class MainScene extends Phaser.Scene {
   config: GlobalConfig;
   constructor(config: GlobalConfig, spriteSheet: typeof SPRITE_SHEET) {
@@ -64,6 +65,8 @@ export class MainScene extends Phaser.Scene {
     speed.addToScene({ x: 60, y: 60 });
     const fly = new FlyBuff(this.config);
     fly.addToScene({ x: 100, y: 60 });
+    const dmgBuff = new PlayerDmgModifierBuff(this.config);
+    dmgBuff.addToScene({ x: 200, y: 60 });
   }
 
   assetLoaded() {

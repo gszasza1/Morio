@@ -3,6 +3,9 @@ import { GlobalConfig } from "./globalConfig";
 import bg from "../assets/ocean.jpg";
 import speedBuff from "../assets/pizza.png";
 import flyBuff from "../assets/plane.png";
+import playerDmgModifierBuff from "../assets/cat.png";
+import smoke from "../assets/smoke.png";
+import rocket from "../assets/rocket.png";
 
 import { SPRITE_SHEET } from "../app";
 export type AssetCheck = { [key in ASSETS]: boolean };
@@ -50,6 +53,10 @@ export class AssetLoader extends ConfigSetter {
   loadBuffs() {
     this.config.mainScene.textures.addBase64(ASSETS.speedBuff, speedBuff);
     this.config.mainScene.textures.addBase64(ASSETS.flyBuff, flyBuff);
+    this.config.mainScene.textures.addBase64(
+      ASSETS.playerDmgModifierBuff,
+      playerDmgModifierBuff
+    );
   }
 
   loadPlayer() {
@@ -69,6 +76,7 @@ export class AssetLoader extends ConfigSetter {
     };
     playerImage.src = this.spriteSheet.player;
   }
+
   loadDmg() {
     const playerDmg = new Image();
     playerDmg.onload = () => {
@@ -85,6 +93,9 @@ export class AssetLoader extends ConfigSetter {
       this.allItemLoaded();
     };
     playerDmg.src = this.spriteSheet.playerDmg;
+
+    this.config.mainScene.textures.addBase64(ASSETS.rocket, rocket);
+    this.config.mainScene.textures.addBase64(ASSETS.smoke, smoke);
   }
 
   get allAssetLoaded() {
@@ -97,4 +108,7 @@ export enum ASSETS {
   speedBuff = "SpeedBuff",
   flyBuff = "flyBuff",
   playerDmg = "playerDmg",
+  playerDmgModifierBuff = "playerDmgModifierBuff",
+  smoke = "smoke",
+  rocket = "rocket",
 }

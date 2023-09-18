@@ -16,4 +16,5 @@ export abstract class Buffbase extends ConfigSetter {
 export enum BUFF_TYPES {
   SPEED_UP = "SPEED_UP",
   FLY = "FLY",
+  PLAYER_DMG_MODIFIER = "PLAYER_DMG_MODIFIER",
 }
