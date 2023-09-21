@@ -1,20 +1,31 @@
 import { ASSETS } from "../assetLoader";
 import { Direction } from "../base/direction";
+import { BaseEnemy } from "../enemy/baseEnemy";
 import { GlobalConfig } from "../globalConfig";
+import { isBody } from "../util/isBody";
+import { toRad } from "../util/toRad";
 import { BaseDmg } from "./baseDmg";
 
 export class PlayerRocketDmg extends BaseDmg {
   smoke: Phaser.GameObjects.Particles.ParticleEmitter;
-  //   smokeTrail
+  dmg: number = 200;
   onWorldCollide(): void {
-    this.object.disableBody(true, true);
     this.smoke.killAll();
     this.smoke.destroy();
-    this.object.destroy(true);
+    super.onWorldCollide();
   }
 
-  onEnemyCollide(): void {
-    this.onEnemyCollide();
+  onEnemyCollide(
+    e?: Phaser.Types.Physics.Arcade.GameObjectWithBody | Phaser.Tilemaps.Tile
+  ): void {
+    if (!isBody(e)) {
+      return;
+    }
+    const enemyInstance = e.getData("object") as BaseEnemy | undefined;
+    if (enemyInstance) {
+      enemyInstance.getDmg(this.dmg);
+      this.onWorldCollide();
+    }
   }
   constructor(config: GlobalConfig) {
     super(config);
@@ -27,24 +38,15 @@ export class PlayerRocketDmg extends BaseDmg {
       ASSETS.rocket
     );
     this.addSmoke(position.x, position.y);
-    this.object.body.setAllowGravity(false);
-    this.object.body.onCollide = true;
-    this.object.body.onWorldBounds = true;
-    this.object.body.collideWorldBounds = true;
-    this.object.body.setCollideWorldBounds(true);
     this.object.flipX = position.direction === Direction.LEFT;
     const direction = position.direction === Direction.LEFT ? -1 : 1;
     this.object.body.setVelocityX(this.speed * direction);
-    this.object.body.world.on(
-      "worldbounds",
-      (body: {
-        gameObject: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
-      }) => {
-        if (body.gameObject === this.object) {
-          this.onWorldCollide();
-        }
-      }
+    this.config.mainScene.physics.add.overlap(
+      this.config.enemies,
+      this.object,
+      (e) => this.onEnemyCollide(e)
     );
+    super.addToScene(position);
   }
 
   addSmoke(x: number, y: number) {

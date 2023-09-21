@@ -46,6 +46,9 @@ const config: Phaser.Types.Core.GameConfig = {
   antialias: true,
   preserveDrawingBuffer: true,
   transparent: true,
+  dom: {
+    createContainer: true,
+  },
   scale: {
     mode: Phaser.Scale.ScaleModes.FIT,
     //  width: 5, // Not working

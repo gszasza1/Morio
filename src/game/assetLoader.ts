@@ -6,6 +6,7 @@ import flyBuff from "../assets/plane.png";
 import playerDmgModifierBuff from "../assets/cat.png";
 import smoke from "../assets/smoke.png";
 import rocket from "../assets/rocket.png";
+import laserBullet from "../assets/laser-bullet.png";
 
 import { SPRITE_SHEET } from "../app";
 export type AssetCheck = { [key in ASSETS]: boolean };
@@ -110,6 +111,7 @@ export class AssetLoader extends ConfigSetter {
 
     this.config.mainScene.textures.addBase64(ASSETS.rocket, rocket);
     this.config.mainScene.textures.addBase64(ASSETS.smoke, smoke);
+    this.config.mainScene.textures.addBase64(ASSETS.laserBullet, laserBullet);
   }
 
   get allAssetLoaded() {
@@ -126,4 +128,5 @@ export enum ASSETS {
   smoke = "smoke",
   rocket = "rocket",
   shark = "shark",
+  laserBullet = "laserBullet",
 }

@@ -8,14 +8,14 @@ export class GlobalConfig {
   private _assetLoader: AssetLoader;
   private _engineConfig: Phaser.Types.Core.GameConfig;
   private _player: Player;
-  private _enemies:Phaser.GameObjects.Group
-
+  private _enemies: Phaser.GameObjects.Group;
+  private _gameIsOn = true;
   set game(game: Phaser.Game) {
     if (!this._game) {
       this._game = game;
     }
   }
-  
+
   get game() {
     if (!this.game) {
       throw Error("Game not found");
@@ -70,5 +70,12 @@ export class GlobalConfig {
 
   get enemies() {
     return this._enemies;
+  }
+  set gameIsOn(gameIsOn: boolean) {
+    this._gameIsOn = gameIsOn;
+  }
+
+  get gameIsOn() {
+    return this._gameIsOn;
   }
 }

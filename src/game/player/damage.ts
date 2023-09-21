@@ -57,11 +57,6 @@ export class PlayerDamage {
     }
   }
 }
-export const PlayerDmg: { [key in PLAYER_DMG_TYPE]: number } = {
-  BASE: 100,
-  SPECIAL: 200,
-};
-
 export enum PLAYER_DMG_TYPE {
   BASE = "BASE",
   SPECIAL = "SPECIAL",

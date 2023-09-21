@@ -1,6 +1,8 @@
 import { ASSETS } from "../assetLoader";
 import { Direction } from "../base/direction";
+import { BaseEnemy } from "../enemy/baseEnemy";
 import { GlobalConfig } from "../globalConfig";
+import { isBody } from "../util/isBody";
 import { BaseDmg } from "./baseDmg";
 
 export enum PlayerDmgAnimation {
@@ -8,15 +10,21 @@ export enum PlayerDmgAnimation {
 }
 
 export class PlayerBaseDmg extends BaseDmg {
-  onWorldCollide(): void {
-    this.object.disableBody(true, true);
-    this.object.destroy(true);
+
+
+  onEnemyCollide(
+    e?: Phaser.Types.Physics.Arcade.GameObjectWithBody | Phaser.Tilemaps.Tile
+  ): void {
+    if (!isBody(e)) {
+      return;
+    }
+    const enemyInstance = e.getData("object") as BaseEnemy | undefined;
+    if (enemyInstance) {
+      enemyInstance.getDmg(this.dmg);
+      this.onWorldCollide();
+    }
   }
 
-  onEnemyCollide(): void {
-    throw new Error("Method not implemented.");
-  }
-  
   constructor(config: GlobalConfig) {
     super(config);
   }
@@ -27,26 +35,19 @@ export class PlayerBaseDmg extends BaseDmg {
       position.y,
       ASSETS.playerDmg
     );
+    super.addToScene(position);
     this.animate();
-    this.object.body.setAllowGravity(false);
-    this.object.body.onCollide = true;
-    this.object.body.onWorldBounds = true;
-    this.object.body.collideWorldBounds = true;
-    this.object.body.setCollideWorldBounds(true);
-    this.object.flipX = position.direction === Direction.LEFT;
+
     const direction = position.direction === Direction.LEFT ? -1 : 1;
 
+    this.object.flipX = position.direction === Direction.LEFT;
     this.object.anims.play(PlayerDmgAnimation.GO, true);
     this.object.body.setVelocityX(this.speed * direction);
-    this.object.body.world.on(
-      "worldbounds",
-      (body: {
-        gameObject: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
-      }) => {
-        if (body.gameObject === this.object) {
-          this.onWorldCollide();
-        }
-      }
+
+    this.config.mainScene.physics.add.overlap(
+      this.config.enemies,
+      this.object,
+      (e) => this.onEnemyCollide(e)
     );
   }
   animate() {

@@ -3,6 +3,7 @@ import { ConfigSetter } from "../base/configSet";
 import { GlobalConfig } from "../globalConfig";
 import { PlayerAnimation, PlayerConfig } from "./config";
 import { PlayerDamage } from "./damage";
+import { PlayerHealth } from "./health";
 import { PlayerMovement } from "./movement";
 
 export class Player extends ConfigSetter {
@@ -10,6 +11,7 @@ export class Player extends ConfigSetter {
   playerConfig = new PlayerConfig();
   movement: PlayerMovement;
   damage: PlayerDamage;
+  health: PlayerHealth;
   space = this.config.mainScene.input.keyboard.addKey("SPACE");
   constructor(
     config: GlobalConfig,
@@ -21,6 +23,7 @@ export class Player extends ConfigSetter {
     this.config.player = this;
     this.movement = new PlayerMovement(this);
     this.damage = new PlayerDamage(this);
+    this.health = new PlayerHealth(this);
   }
 
   update() {

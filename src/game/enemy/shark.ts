@@ -1,7 +1,10 @@
+import { ANIMATIONS } from "../animations";
 import { ASSETS } from "../assetLoader";
+import { SharkDmg } from "../damage/sharkDmg";
 import { GlobalConfig } from "../globalConfig";
-import { BaseEnemy, ENEMY_ANIMATION } from "./baseEnemy";
+import { BaseEnemy } from "./baseEnemy";
 
+const BASE_FIRE_TIMER = 2000;
 export class SharkEnemy extends BaseEnemy {
   constructor(config: GlobalConfig) {
     super(config);
@@ -13,70 +16,59 @@ export class SharkEnemy extends BaseEnemy {
       position.y,
       ASSETS.shark
     );
-    this.config.enemies.add(this.object);
+    super.addToScene(position);
     this.animate();
-    this.object.body.setAllowGravity(true);
-    this.object.body.collideWorldBounds = true;
-    this.object.body.setCollideWorldBounds(true);
-
-    this.object.anims.play(ENEMY_ANIMATION.SHARK_FIRE_STOP, true);
-    setInterval(() => {
-      this.object.anims.play(ENEMY_ANIMATION.SHARK_FIRE, true);
-    }, 2000);
+    this.object.anims.play(ANIMATIONS.SHARK_FIRE_STOP, true);
+    const fireAnimationTimer = setInterval(() => {
+      this.object.anims.play(ANIMATIONS.SHARK_FIRE, true);
+      this.fire();
+    }, BASE_FIRE_TIMER);
+    this.animationInterval.push(fireAnimationTimer);
     setTimeout(() => {
-      setInterval(() => {
-        this.object.anims.play(ENEMY_ANIMATION.SHARK_FIRE_STOP, true);
-      }, 2000);
+      const stopAnimationTimer = setInterval(() => {
+        this.object.anims.play(ANIMATIONS.SHARK_FIRE_STOP, true);
+      }, BASE_FIRE_TIMER);
+      this.animationInterval.push(stopAnimationTimer);
     }, 600);
   }
   animate() {
-    if (!this.config.mainScene.anims.exists(ENEMY_ANIMATION.SHARK_FIRE)) {
+    if (!this.config.mainScene.anims.exists(ANIMATIONS.SHARK_FIRE)) {
       this.config.mainScene.anims.create({
         skipMissedFrames: true,
-        key: ENEMY_ANIMATION.SHARK_FIRE,
-        frames: this.config.mainScene.anims.generateFrameNumbers(
-          ASSETS.shark,
-          {
-            start: 1,
-            end: 1,
-          }
-        ),
+        key: ANIMATIONS.SHARK_FIRE,
+        frames: this.config.mainScene.anims.generateFrameNumbers(ASSETS.shark, {
+          start: 1,
+          end: 1,
+        }),
 
         frameRate: 10,
         repeat: -1,
       });
     }
-    if (!this.config.mainScene.anims.exists(ENEMY_ANIMATION.SHARK_FIRE_STOP)) {
+    if (!this.config.mainScene.anims.exists(ANIMATIONS.SHARK_FIRE_STOP)) {
       this.config.mainScene.anims.create({
         skipMissedFrames: true,
-        key: ENEMY_ANIMATION.SHARK_FIRE_STOP,
-        frames: this.config.mainScene.anims.generateFrameNumbers(
-          ASSETS.shark,
-          {
-            start: 0,
-            end: 0,
-          }
-        ),
+        key: ANIMATIONS.SHARK_FIRE_STOP,
+        frames: this.config.mainScene.anims.generateFrameNumbers(ASSETS.shark, {
+          start: 0,
+          end: 0,
+        }),
 
         frameRate: 10,
         repeat: -1,
       });
     }
   }
-  getDmg(dmgNumber: number): void {
-    this.health -= dmgNumber;
-    if (this.health <= 0) {
-      this.die();
-    }
-  }
+
   fire(): void {
-    throw new Error("Method not implemented.");
+    const dmg = new SharkDmg(this.config);
+    dmg.addToScene({
+      x: this.object.body.center.x,
+      y: this.object.body.center.y,
+    });
   }
-  die(): void {
-    this.destroy();
-  }
+
   destroy(): void {
-    this.config.enemies.remove(this.object, true, true);
-    this.object.destroy(true);
+    super.destroy();
   }
 }
