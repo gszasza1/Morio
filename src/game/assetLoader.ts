@@ -7,6 +7,7 @@ import playerDmgModifierBuff from "../assets/cat.png";
 import smoke from "../assets/smoke.png";
 import rocket from "../assets/rocket.png";
 import laserBullet from "../assets/laser-bullet.png";
+import r2d2 from "../assets/r2d2.png";
 
 import { SPRITE_SHEET } from "../app";
 export type AssetCheck = { [key in ASSETS]: boolean };
@@ -90,6 +91,7 @@ export class AssetLoader extends ConfigSetter {
       this.allItemLoaded();
     };
     shark.src = this.spriteSheet.shark;
+    this.config.mainScene.textures.addBase64(ASSETS.r2d2, r2d2);
   }
 
   loadDmg() {
@@ -129,4 +131,5 @@ export enum ASSETS {
   rocket = "rocket",
   shark = "shark",
   laserBullet = "laserBullet",
+  r2d2 = "r2d2",
 }
