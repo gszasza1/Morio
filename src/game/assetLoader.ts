@@ -8,6 +8,8 @@ import smoke from "../assets/smoke.png";
 import rocket from "../assets/rocket.png";
 import laserBullet from "../assets/laser-bullet.png";
 import r2d2 from "../assets/r2d2.png";
+import egg from "../assets/egg.png";
+import laserPoint from "../assets/laser-point.png";
 
 import { SPRITE_SHEET } from "../app";
 export type AssetCheck = { [key in ASSETS]: boolean };
@@ -60,6 +62,7 @@ export class AssetLoader extends ConfigSetter {
       ASSETS.playerDmgModifierBuff,
       playerDmgModifierBuff
     );
+    this.config.mainScene.textures.addBase64(ASSETS.laserPoint, laserPoint);
   }
 
   loadPlayer() {
@@ -114,6 +117,7 @@ export class AssetLoader extends ConfigSetter {
     this.config.mainScene.textures.addBase64(ASSETS.rocket, rocket);
     this.config.mainScene.textures.addBase64(ASSETS.smoke, smoke);
     this.config.mainScene.textures.addBase64(ASSETS.laserBullet, laserBullet);
+    this.config.mainScene.textures.addBase64(ASSETS.egg, egg);
   }
 
   get allAssetLoaded() {
@@ -132,4 +136,6 @@ export enum ASSETS {
   shark = "shark",
   laserBullet = "laserBullet",
   r2d2 = "r2d2",
+  egg = "egg",
+  laserPoint = "laserPoint",
 }

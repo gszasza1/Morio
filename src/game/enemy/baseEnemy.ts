@@ -9,6 +9,7 @@ export abstract class BaseEnemy extends ConfigSetter {
   object: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   animationInterval: NodeJS.Timeout[] = [];
   healthBar: Phaser.GameObjects.Graphics;
+  private alphaHolder: NodeJS.Timeout;
   constructor(config: GlobalConfig) {
     super(config);
   }
@@ -23,7 +24,7 @@ export abstract class BaseEnemy extends ConfigSetter {
     this.addHealthBar();
   }
   abstract fire(): void;
-  
+
   getDmg(dmgNumber: number): void {
     this.health -= dmgNumber;
     damageTakenFloating(
@@ -34,12 +35,18 @@ export abstract class BaseEnemy extends ConfigSetter {
       },
       dmgNumber
     );
+    this.object.setAlpha(0.5, 0.5, 0.5, 0.5);
+
+    this.alphaHolder = setTimeout(() => {
+      this.object.setAlpha(1, 1, 1, 1);
+    }, 300);
     if (this.health <= 0) {
       this.destroy();
     }
   }
 
   destroy() {
+    clearTimeout(this.alphaHolder);
     this.animationInterval.forEach((interval) => clearInterval(interval));
     this.config.enemies.remove(this.object, true, true);
     this.healthBar.destroy();

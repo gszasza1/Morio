@@ -7,10 +7,10 @@ export class FlyBuff extends Buffbase {
     super(config, BUFF_TYPES.FLY);
   }
   onPlayerCollide(): void {
-    this.config.player.movement.isFlying = true;
+    this.config.player.movement.setFly(true);
     this.object.disableBody(true, true);
     setTimeout(() => {
-      this.config.player.movement.isFlying = false;
+      this.config.player.movement.setFly(false);
       this.object.destroy();
     }, this.BUFF_DURATION);
   }

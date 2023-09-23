@@ -2,7 +2,8 @@ import { damageTakenFloating } from "../floating/damageTaken";
 import { Player } from "./player";
 
 export class PlayerHealth {
-  health = 1000;
+  maxHelath = 1000;
+  health = this.maxHelath;
   constructor(public player: Player) {}
 
   loseHealth(dmg: number) {

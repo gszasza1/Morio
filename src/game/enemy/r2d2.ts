@@ -1,12 +1,14 @@
 import { ANIMATIONS } from "../animations";
 import { ASSETS } from "../assetLoader";
 import { Direction } from "../base/direction";
+import { EggDmg } from "../damage/eggDmg";
 import { SharkDmg } from "../damage/sharkDmg";
 import { GlobalConfig } from "../globalConfig";
 import { BaseEnemy } from "./baseEnemy";
 
 export class R2D2Enemy extends BaseEnemy {
   maxHealth: number = 5000;
+  private fireHolder: string | number | NodeJS.Timeout;
   constructor(config: GlobalConfig) {
     super(config);
   }
@@ -19,6 +21,7 @@ export class R2D2Enemy extends BaseEnemy {
     );
     super.addToScene(position);
     this.randomMove();
+    this.fire()
   }
   randomMove() {
     const randomDirection = Math.random() > 0.5 ? -1 : 1;
@@ -32,7 +35,11 @@ export class R2D2Enemy extends BaseEnemy {
   }
 
   fire(): void {
-    const dmg = new SharkDmg(this.config);
+    const randomDmgTime = Math.random() * 1000 + 2000;
+    this.fireHolder = setTimeout(() => {
+      this.fire();
+    }, randomDmgTime);
+    const dmg = new EggDmg(this.config);
     dmg.addToScene({
       x: this.object.body.center.x,
       y: this.object.body.center.y,
@@ -40,6 +47,7 @@ export class R2D2Enemy extends BaseEnemy {
   }
 
   destroy(): void {
+    clearTimeout(this.fireHolder);
     super.destroy();
   }
 }

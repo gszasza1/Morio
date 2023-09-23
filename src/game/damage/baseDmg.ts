@@ -16,17 +16,15 @@ export abstract class BaseDmg extends ConfigSetter {
     this.object.body.onWorldBounds = true;
     this.object.body.collideWorldBounds = true;
     this.object.body.setCollideWorldBounds(true);
-    this.object.body.world.on(
-      "worldbounds",
-      (body: {
-        gameObject: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
-      }) => {
-        if (body.gameObject === this.object) {
-          this.onWorldCollide();
-        }
-      }
-    );
+    this.object.body.world.on("worldbounds", this.worldCollideEvent);
   }
+  worldCollideEvent = (body: {
+    gameObject: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+  }) => {
+    if (body.gameObject === this.object) {
+      this.onWorldCollide();
+    }
+  };
   onEnemyCollide(): void {
     this.onWorldCollide();
   }

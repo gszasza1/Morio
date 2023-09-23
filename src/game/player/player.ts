@@ -13,17 +13,21 @@ export class Player extends ConfigSetter {
   damage: PlayerDamage;
   health: PlayerHealth;
   space = this.config.mainScene.input.keyboard.addKey("SPACE");
+
+  healthBar: Phaser.GameObjects.Graphics;
   constructor(
     config: GlobalConfig,
     public playerSprite: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
   ) {
     super(config);
+
     this.animatePlayer();
-    this.cursors = this.config.mainScene.input.keyboard.createCursorKeys();
     this.config.player = this;
+    this.cursors = this.config.mainScene.input.keyboard.createCursorKeys();
     this.movement = new PlayerMovement(this);
     this.damage = new PlayerDamage(this);
     this.health = new PlayerHealth(this);
+    this.addHealthBar();
   }
 
   update() {
@@ -59,7 +63,7 @@ export class Player extends ConfigSetter {
   animatePlayer() {
     this.playerSprite.setBounce(0.2);
     this.playerSprite.setCollideWorldBounds(true);
-
+    this.playerSprite.depth = 100;
     this.config.mainScene.anims.create({
       skipMissedFrames: true,
       key: PlayerAnimation.GO_LEFT,
@@ -89,4 +93,37 @@ export class Player extends ConfigSetter {
       repeat: -1,
     });
   }
+  addHealthBar() {
+    this.healthBar = new Phaser.GameObjects.Graphics(this.config.mainScene);
+
+    this.healthBar.depth = 20;
+    this.redrawHealthBar();
+    this.config.mainScene.add.existing(this.healthBar);
+    this.config.mainScene.events.on("postupdate", this.redrawHealthBar);
+  }
+
+  redrawHealthBar = () => {
+    //Object destroyed handle
+    if (!this.playerSprite.body || !this.healthBar) {
+      return;
+    }
+    const healthBarWidth = 40;
+    this.healthBar.clear();
+    this.healthBar.fillStyle(0x000000);
+    this.healthBar.fillRect(
+      this.playerSprite.body.center.x - healthBarWidth / 2,
+      this.playerSprite.body.position.y,
+      healthBarWidth,
+      4
+    );
+    const currentHealthBrWidth =
+      healthBarWidth * (this.health.health / this.health.maxHelath);
+    this.healthBar.fillStyle(0xffff00);
+    this.healthBar.fillRect(
+      this.playerSprite.body.center.x - healthBarWidth / 2,
+      this.playerSprite.body.position.y,
+      currentHealthBrWidth,
+      4
+    );
+  };
 }

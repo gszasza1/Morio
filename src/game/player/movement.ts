@@ -1,8 +1,10 @@
+import { ASSETS } from "../assetLoader";
 import { PlayerAnimation } from "./config";
 import { Player } from "./player";
 
 export class PlayerMovement {
   isFlying = false;
+  flyingEffect: Phaser.GameObjects.Particles.ParticleEmitter;
   constructor(public player: Player) {}
 
   setFly(fly: boolean) {
@@ -51,11 +53,44 @@ export class PlayerMovement {
   }
 
   private disableGravity() {
+    this.flyingEffect = this.player.config.mainScene.add.particles(
+      0,
+      0,
+      ASSETS.laserPoint,
+      {
+        x: this.player.playerSprite.body.center.x,
+        y: this.player.playerSprite.body.bottom + 5,
+        lifespan: { min: 200, max: 600 },
+        speed: { min: 70, max: 110 },
+        angle: { min: 270 - 10, max: 270 + 10 },
+        timeScale: 0.35,
+        gravityX: -2,
+        gravityY: -5,
+        rotate: { min: 0, max: 360 },
+        alpha: { start: 0.6, end: 0 },
+        quantity: 1,
+        blendMode: Phaser.BlendModes.NORMAL,
+        particleBringToTop: false,
+        visible: true,
+        scale: {
+          start: 0.7,
+          end: 0,
+          ease: Phaser.Math.Easing.Cubic.In,
+        },
+      }
+    );
+    this.flyingEffect.depth = 0;
+    this.flyingEffect.startFollow(this.player.playerSprite);
     this.player.playerSprite.body.setAllowGravity(false);
     this.player.playerSprite.setVelocityY(0);
   }
 
   private enableGravity() {
+    this.flyingEffect.stop();
+    setTimeout(() => {
+      this.flyingEffect.destroy();
+      this.flyingEffect = undefined;
+    }, 600);
     this.player.playerSprite.body.setAllowGravity(true);
   }
 }
