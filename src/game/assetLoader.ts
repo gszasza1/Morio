@@ -9,6 +9,8 @@ import rocket from "../assets/rocket.png";
 import laserBullet from "../assets/laser-bullet.png";
 import r2d2 from "../assets/r2d2.png";
 import egg from "../assets/egg.png";
+import platform from "../assets/platform.png";
+import tile from "../assets/super-mario.png";
 import laserPoint from "../assets/laser-point.png";
 
 import { SPRITE_SHEET } from "../app";
@@ -38,6 +40,7 @@ export class AssetLoader extends ConfigSetter {
     this.loadBuffs();
     this.loadDmg();
     this.loadEnemy();
+    this.loadPlatform();
   }
 
   assetLoaded(assetName: ASSETS) {
@@ -48,6 +51,10 @@ export class AssetLoader extends ConfigSetter {
 
   loadBg() {
     this.config.mainScene.textures.addBase64(ASSETS.bg, bg);
+  }
+  loadPlatform() {
+    this.config.mainScene.textures.addBase64(ASSETS.tile, tile);
+    this.config.mainScene.textures.addBase64(ASSETS.platform, platform);
   }
 
   allItemLoaded() {
@@ -138,4 +145,6 @@ export enum ASSETS {
   r2d2 = "r2d2",
   egg = "egg",
   laserPoint = "laserPoint",
+  platform = "platform",
+  tile = "tile",
 }

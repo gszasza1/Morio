@@ -10,6 +10,7 @@ export class GlobalConfig {
   private _player: Player;
   private _enemies: Phaser.GameObjects.Group;
   private _gameIsOn = true;
+  private _platform: Phaser.Physics.Arcade.StaticGroup;
   set game(game: Phaser.Game) {
     if (!this._game) {
       this._game = game;
@@ -77,5 +78,15 @@ export class GlobalConfig {
 
   get gameIsOn() {
     return this._gameIsOn;
+  }
+  set platform(platform: Phaser.Physics.Arcade.StaticGroup) {
+    this._platform = platform;
+  }
+
+  get platform() {
+    if (!this._platform) {
+      throw Error("platform not found");
+    }
+    return this._platform;
   }
 }
